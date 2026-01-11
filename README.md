@@ -12,6 +12,34 @@ Unlike traditional tools that just give you a static list of emails, this system
 ## 🏗️ Architecture
 The system follows a **Hybrid Microservices** architecture to ensure scalability and separation of concerns:
 
+### 🧠 AI Workflow Logic
+```mermaid
+graph TD
+    A[User Input: ICP] -->|Triggers| B(AI Engine: LangGraph)
+    style A fill:#3b82f6,stroke:#333,stroke-width:2px,color:white
+    
+    subgraph "Phase 1: Discovery (Prospector)"
+    B --> C{Prospector Agent}
+    C -->|Search Query| D[DuckDuckGo API]
+    D -->|Raw Results| C
+    C -->|Filter Blacklist| E[Cleaned URL List]
+    end
+    
+    subgraph "Phase 2: Deep Research (Researcher)"
+    E -->|For Each URL| F{Researcher Agent}
+    F -->|Headless Visit| G[Company Homepage]
+    G -->|Scrape & Read| F
+    F -->|Extract Insights| H[Deep-Dive Dossier]
+    end
+    
+    subgraph "Phase 3: Persistence"
+    H -->|Save| I[(MongoDB Database)]
+    end
+    
+    I -->|Live Update| J[Frontend Dashboard]
+    style I fill:#10b981,stroke:#333,stroke-width:2px,color:white
+```
+
 ### 1. 🧠 AI Engine (`/ai_engine`)
 *   **Tech**: Python 3, LangGraph, FastAPI, Playwright, DuckDuckGo.
 *   **Role**: The "Brain". It runs the agentic workflows.
